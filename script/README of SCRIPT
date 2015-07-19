@@ -1,0 +1,93 @@
+sinfo.db	the input static info database
+stat.out	the statistics output file
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+
+idiom:
+
+command [options] --- program
+command_script [options] --- benchmark
+  valid commands are:
+	default
+	native
+	pinbase
+	pct
+	pct_large
+	rand_delay
+	chess
+	chess_race
+
+display [optiond] <object>
+  valid objects are:
+	inst_table		count		lib		memo_address	code_address
+	image_table		lib_address
+	pct_history		thread_num	inst_count
+	pct_history_summary	Avg_inst_count	Avg_thread_num
+	test_history		idiom_count	idiom_type	test_result	random_seed
+	test_history_summary
+	iroot_db		idiom_count	idiom_type	operation	[inst_table]
+	memo_exposed_set	idiom_count	idiom_type	operation	[inst_table]
+	memo_summary
+
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+TODO
+race:
+
+djit [options] --- program
+
+display [options] <object>
+  valid objects are:
+	static_race
+	race
+	racy_inst
+
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+TODO
+regression:
+
+<suite> :
+	systematic.chess
+	idiom.predictor
+	idiom.observer
+
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+TODO
+sinst:
+
+display [options] sinst_db	similar to inst_table? no idea.
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+TODO
+systematic:
+
+chess_race [options] --- program
+chess [options] --- program
+
+display [options] <object>
+  valid objects are:
+	object_table
+	search_info	(search.db ??)
+	thread_table	(program.db ??)
+
+
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+TODO
+
+tracer:
+
+record [options] --- program
+display [options] log
