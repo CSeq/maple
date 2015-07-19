@@ -24,8 +24,8 @@ _sio = [None, os.devnull, 'stderr']
 class Test(testing.CmdlineTest):
     def __init__(self, input_idx):
         testing.CmdlineTest.__init__(self, input_idx)
-        #self.add_input(([self.bin(), '-n1', 'http://apache.cyberuse.com/httpd/httpd-2.2.21.tar.gz', '-l', 'aget.file'], _sio))
-        self.add_input(([self.bin(), '-n1', 'http://zodiac.eecs.umich.edu/httpd-2.2.21.tar.gz', '-l', 'aget.file'], _sio))
+        self.add_input(([self.bin(), '-n1', 'http://www.baidu.com/img/bdlogo.gif', '-l', 'aget.file'], _sio))
+        #self.add_input(([self.bin(), '-n1', 'http://zodiac.eecs.umich.edu/httpd-2.2.21.tar.gz', '-l', 'aget.file'], _sio))
     def bin(self):
         return config.benchmark_home('aget_bug1') + '/aget'
     def setup(self):

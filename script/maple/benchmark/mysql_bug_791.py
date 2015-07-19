@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Authors - Jie Yu (jieyu@umich.edu)
+
+Modified by DKeeper at 2013.11.21
 """
 
 import os
@@ -64,7 +66,7 @@ class Test(testing.ServerTest):
         # Setup test database.
         shutil.rmtree(self.var(), ignore_errors=True)
         subprocess.call([self.mysql_install_db()])
-        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin'])
+        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin', '--skip-grant-tables'])
         self.wait_for_idle()
         subprocess.call([self.mysql(), '-u', 'root', '-D', 'test'], stdin=file(self.create_sql))
         self.wait_for_idle()
@@ -81,7 +83,7 @@ class Test(testing.ServerTest):
         self.unwrap_mysqld()
     def start(self):
         logging.msg('starting server for mysql_bug_791\n')
-        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin'])
+        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin', '--skip-grant-tables'])
         self.wait_for_idle()
     def stop(self):
         self.wait_for_idle()
@@ -98,17 +100,20 @@ class Test(testing.ServerTest):
         logging.msg('issuing requests for mysql_bug_791\n')
         for i in range(len(clients)):
             clients[i].start()
+            logging.msg('clients %d start\n' % i)
         for i in range(len(clients)):
             clients[i].join()
+            logging.msg('clients %d join\n' % i)
     def check_offline(self):
-        p_v1 = subprocess.Popen([self.mysqlbinlog(), '-s', self.var() + '/%s-bin.002' % config.host_name()], stdout=subprocess.PIPE)
-        p_v2 = subprocess.Popen(['grep', 'insert'], stdin=p_v1.stdout, stdout=subprocess.PIPE)
-        p_v3 = subprocess.Popen(['wc', '-l'], stdin=p_v2.stdout, stdout=subprocess.PIPE)
-        result1 = int(p_v3.communicate()[0])
         p_v1 = subprocess.Popen([self.mysqlbinlog(), '-s', self.var() + '/%s-bin.003' % config.host_name()], stdout=subprocess.PIPE)
         p_v2 = subprocess.Popen(['grep', 'insert'], stdin=p_v1.stdout, stdout=subprocess.PIPE)
         p_v3 = subprocess.Popen(['wc', '-l'], stdin=p_v2.stdout, stdout=subprocess.PIPE)
+        result1 = int(p_v3.communicate()[0])
+        p_v1 = subprocess.Popen([self.mysqlbinlog(), '-s', self.var() + '/%s-bin.004' % config.host_name()], stdout=subprocess.PIPE)
+        p_v2 = subprocess.Popen(['grep', 'insert'], stdin=p_v1.stdout, stdout=subprocess.PIPE)
+        p_v3 = subprocess.Popen(['wc', '-l'], stdin=p_v2.stdout, stdout=subprocess.PIPE)
         result2 = int(p_v3.communicate()[0])
+        logging.msg('%d + %d\n' % (result1, result2))
         if result1 + result2 != 50:
             return True
         else:

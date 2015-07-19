@@ -49,8 +49,9 @@ class Test(testing.ServerTest):
     def __init__(self, input_idx):
         testing.ServerTest.__init__(self, input_idx)
         # input format: ([(uri_idx, num_calls), ...], buffer)
+        #self.add_input(([(1, 100), (2, 100)], True))
         self.add_input(([(1, 50), (1, 30)], False))
-        self.add_input(([(1, 50)], True))
+        #self.add_input(([(1, 50)], True))
     def setup(self):
         if os.path.exists(self.pid_file()):
             os.remove(self.pid_file())
@@ -106,7 +107,8 @@ class Test(testing.ServerTest):
     def log_file(self):
         return self.home() + '/logs/access_log'
     def conf_file(self):
-        return self.home() + '/conf/httpd.conf.buffer'
+        return self.home() + '/conf/httpd.conf'
+        #return self.home() + '/conf/httpd.conf.buffer'
 
 def get_test(input_idx='default'):
     return Test(input_idx)

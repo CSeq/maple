@@ -61,7 +61,7 @@ class Test(testing.ServerTest):
         # Setup test database.
         shutil.rmtree(self.var(), ignore_errors=True)
         subprocess.call([self.mysql_install_db()])
-        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin'])
+        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin', '--skip-grant-tables'])
         self.wait_for_idle()
         subprocess.call([self.mysql(), '-u', 'root', '-D', 'test'], stdin=file(self.create_sql))
         self.wait_for_idle()
@@ -78,7 +78,7 @@ class Test(testing.ServerTest):
         self.unwrap_mysqld()
     def start(self):
         logging.msg('starting server for mysql_bug_791_training\n')
-        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin'])
+        self.server = subprocess.Popen([self.mysqld_safe(), '--user=root', '--log-bin', '--skip-grant-tables'])
         self.wait_for_idle()
     def stop(self):
         self.wait_for_idle()

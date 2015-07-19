@@ -66,7 +66,7 @@ class Test(testing.ServerTest):
     def bin(self):
         return config.benchmark_home('aget_bug2') + '/aget'
     def verifier(self):
-        return config.benchmark_home('aget_bug2') + '/verifier'
+        return config.benchmark_home('aget_bug2') + '/reproduce-pkg/verifier'
     def log_file(self):
         return os.path.join(os.path.expanduser('~'), 'aget.file-ageth.log')
 

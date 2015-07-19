@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Authors - Jie Yu (jieyu@umich.edu)
+
+Modified by DKeeper at 2013.12.26
+::CmdlineTest::if self.check_hang
 """
 
 import os
@@ -108,8 +111,10 @@ class CmdlineTest(Test):
                                 stdin=self.fio[0],
                                 stdout=self.fio[1],
                                 stderr=self.fio[2])
+        x = 0
         while True:
             time.sleep(0.1)
+            x += 1
             retcode = proc.poll()
             if retcode != None:
                 proc.wait()
@@ -122,6 +127,7 @@ class CmdlineTest(Test):
                         self.result = TestResult.NORMAL
                 break
             if self.check_hang():
+            #if x >= 100:
                 self.result = TestResult.HANG
                 util.kill_process(proc.pid)
                 break

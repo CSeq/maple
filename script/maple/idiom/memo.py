@@ -276,4 +276,260 @@ class Memo(object):
     def display_exposed_set(self, f):
         for iroot_info in self.exposed_set:
             f.write('%s\n' % str(iroot_info.iroot()))
+##==============================================================
+## my_save
+##==============================================================
+    def my_update(self, db_name, all_exposed_set, all_failed_set, all_shadow_exposed_set):
+        del self.proto.iroot_info[:]
+        del self.proto.exposed[:]
+        del self.proto.failed[:]
+        del self.proto.predicted[:]
+        del self.proto.shadow_exposed[:]
+        del self.proto.candidate[:]
+        for iroot_id, iroot_info in self.iroot_info_map.iteritems():
+            iroot_info_proto = self.proto.iroot_info.add()
+            iroot_info_proto.iroot_id = iroot_id
+            iroot_info_proto.total_test_runs = iroot_info.total_test_runs()
+            if (iroot_info.has_async()):
+                iroot_info_proto.async = iroot_info.async()
+        for iroot_info in self.exposed_set:
+            self.proto.exposed.append(iroot_info.iroot().id())
+        for iroot_info in self.failed_set:
+            self.proto.failed.append(iroot_info.iroot().id())
+        for iroot_info in self.predicted_set:
+            self.proto.predicted.append(iroot_info.iroot().id())
+        for iroot_info in self.shadow_exposed_set:
+            self.proto.shadow_exposed.append(iroot_info.iroot().id())
+        for iroot_info, test_runs in self.candidate_map.iteritems():
+            if is_in_set(myIRoot(iroot_info.iroot()), all_exposed_set):
+                self.proto.exposed.append(iroot_info.iroot().id())
+            elif is_in_set(myIRoot(iroot_info.iroot()), all_failed_set):
+                self.proto.failed.append(iroot_info.iroot().id())
+            elif is_in_set(myIRoot(iroot_info.iroot()), all_shadow_exposed_set):
+                self.proto.shadow_exposed.append(iroot_info.iroot().id())
+            else:
+                cand_proto = self.proto.candidate.add()
+                cand_proto.iroot_id = iroot_info.iroot().id()
+                cand_proto.test_runs = test_runs
+        f = open(db_name, 'wb')
+        f.write(self.proto.SerializeToString())
+        f.close()
+    def my_updatep(self, db_name, all_exposed_set, all_failed_set, all_shadow_exposed_set):
+        del self.proto.iroot_info[:]
+        del self.proto.exposed[:]
+        del self.proto.failed[:]
+        del self.proto.predicted[:]
+        del self.proto.shadow_exposed[:]
+        del self.proto.candidate[:]
+        for iroot_id, iroot_info in self.iroot_info_map.iteritems():
+            iroot_info_proto = self.proto.iroot_info.add()
+            iroot_info_proto.iroot_id = iroot_id
+            iroot_info_proto.total_test_runs = iroot_info.total_test_runs()
+            if (iroot_info.has_async()):
+                iroot_info_proto.async = iroot_info.async()
+        for iroot_info in self.exposed_set:
+            self.proto.exposed.append(iroot_info.iroot().id())
+        for iroot_info in self.failed_set:
+            self.proto.failed.append(iroot_info.iroot().id())
+        for iroot_info in self.predicted_set:
+            self.proto.predicted.append(iroot_info.iroot().id())
+        for iroot_info in self.shadow_exposed_set:
+            self.proto.shadow_exposed.append(iroot_info.iroot().id())
+        for iroot_info, test_runs in self.candidate_map.iteritems():
+            if int(myIRootp(iroot_info.iroot()).event_list) in all_exposed_set:
+                self.proto.exposed.append(iroot_info.iroot().id())
+            elif int(myIRootp(iroot_info.iroot()).event_list) in all_failed_set:
+                self.proto.failed.append(iroot_info.iroot().id())
+            elif int(myIRootp(iroot_info.iroot()).event_list) in all_shadow_exposed_set:
+                self.proto.shadow_exposed.append(iroot_info.iroot().id())
+            else:
+                cand_proto = self.proto.candidate.add()
+                cand_proto.iroot_id = iroot_info.iroot().id()
+                cand_proto.test_runs = test_runs
+        f = open(db_name, 'wb')
+        f.write(self.proto.SerializeToString())
+        f.close()
 
+##==============================================================
+## Start
+##==============================================================
+
+def idiom_type_name(t):
+    if t == iroot_pb2().IDIOM_1:
+        return 'IDIOM_1'
+    elif t == iroot_pb2().IDIOM_2:
+        return 'IDIOM_2'
+    elif t == iroot_pb2().IDIOM_3:
+        return 'IDIOM_3'
+    elif t == iroot_pb2().IDIOM_4:
+        return 'IDIOM_4'
+    elif t == iroot_pb2().IDIOM_5:
+        return 'IDIOM_5'
+    else:
+        return 'INVALID'
+
+def iroot_event_type_name(t):
+    if t == iroot_pb2().IROOT_EVENT_MEM_READ:
+        return 'READ'
+    elif t == iroot_pb2().IROOT_EVENT_MEM_WRITE:
+        return 'WRITE'
+    elif t == iroot_pb2().IROOT_EVENT_MUTEX_LOCK:
+        return 'LOCK'
+    elif t == iroot_pb2().IROOT_EVENT_MUTEX_UNLOCK:
+        return 'UNLOCK'
+    else:
+        return 'INVALID'
+        
+def event_equal(e1, e2):
+    if e1.type != e2.type:
+        return False
+    if e1.inst_offset != e2.inst_offset:
+        return False
+    return True
+
+def is_in_set(myMemo_info, myIRoot_set):
+    if len(myIRoot_set) == 0:
+        return False
+    for myI in myIRoot_set:
+        if myMemo_info.idiom == myI.idiom:
+            length = len(myMemo_info.event_list)
+            count = 0
+            for idx in range(length):
+                if event_equal(myI.event_list[idx], myMemo_info.event_list[idx]):
+                    count += 1
+                else:
+                    break
+            if count == length:
+                return True
+    return False
+
+
+class myIRootEvent(object):
+    def __init__(self, event):
+        self.type = event.type()
+        self.inst_offset = event.inst().offset()
+    def __str__(self):
+        content = []
+        content.append('%-7s' % iroot_event_type_name(self.type))
+        content.append('0x%-6x' % self.inst_offset)
+        return ' '.join(content)
+
+
+class myIRoot(object):
+    def __init__(self, iroot_info):
+        self.idiom = iroot_info.idiom()
+        self.event_list = list()
+        for idx in range(len(iroot_info.proto.event_id)):
+            myE = myIRootEvent(iroot_info.event(idx))
+            self.event_list.append(myE)
+    def __str__(self):
+        content = []
+        content.append('%-7s' % idiom_type_name(self.idiom))
+        content.append('\n')
+        idx = 0
+        for e in self.event_list:
+            content.append('\t')
+            content.append('e%d: %s' % (idx, str(e)))
+            idx += 1
+            content.append('\n')
+        return ''.join(content)
+
+"""
+class myMemo_old(object):
+    def __init__(self, memo):
+        self.exposed_set = set()
+        for iroot_info in memo.exposed_set:
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.exposed_set.add(my_iRoot)
+"""
+
+class myMemo(object):
+    def __init__(self, memo):
+        self.exposed_set = set()
+        self.failed_set = set()
+        self.predicted_set = set()
+        self.shadow_exposed_set = set()
+        for iroot_info in memo.exposed_set:
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.exposed_set.add(my_iRoot)
+        for iroot_info in memo.failed_set:
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.failed_set.add(my_iRoot)
+        for iroot_info in memo.predicted_set:
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.predicted_set.add(my_iRoot)
+        for iroot_info in memo.shadow_exposed_set:
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.shadow_exposed_set.add(my_iRoot)
+
+"""
+class myCandidate_set(object):
+    def __init__(self, memo, testCase):
+        self.test_case = testCase
+        self.candidate_set = set()
+        for iroot_info in memo.candidate_map.keys():
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.candidate_set.add(my_iRoot)
+"""
+
+class myCandidate(object):
+    def __init__(self, memo, testCase):
+        self.test_case = testCase
+        self.candidate_map = {}
+        for iroot_info in memo.candidate_map.keys():
+            my_iRoot = myIRoot(iroot_info.iroot())
+            self.candidate_map[iroot_info.iroot().id()] = my_iRoot
+
+##==============================================================
+## End
+##==============================================================
+
+
+
+
+
+##==============================================================
+## Startp
+##==============================================================
+
+class myIRootp(object):
+    def __init__(self, iroot_info):
+        self.event_list = ""
+        for idx in range(len(iroot_info.proto.event_id)):
+            str_value = str(iroot_info.event(idx).inst().id())
+            self.event_list = self.event_list + str(len(str_value)) + str_value
+
+class myMemop(object):
+    def __init__(self, memo):
+        self.exposed_set = set()
+        self.failed_set = set()
+        self.predicted_set = set()
+        self.shadow_exposed_set = set()
+        for iroot_info in memo.exposed_set:
+            my_iRoot = myIRootp(iroot_info.iroot())
+            self.exposed_set.add(int(my_iRoot.event_list))
+        for iroot_info in memo.failed_set:
+            my_iRoot = myIRootp(iroot_info.iroot())
+            self.failed_set.add(int(my_iRoot.event_list))
+        for iroot_info in memo.predicted_set:
+            my_iRoot = myIRootp(iroot_info.iroot())
+            self.predicted_set.add(int(my_iRoot.event_list))
+        for iroot_info in memo.shadow_exposed_set:
+            my_iRoot = myIRootp(iroot_info.iroot())
+            self.shadow_exposed_set.add(int(my_iRoot.event_list))
+
+class myCandidatep(object):
+    def __init__(self, memo, testCase):
+        self.test_case = testCase
+        self.candidate_set = set()
+        for iroot_info in memo.candidate_map.keys():
+            my_iRoot = myIRootp(iroot_info.iroot())
+            self.candidate_set.add(int(my_iRoot.event_list))
+    def __str__(self):
+        content = []
+        content.append("[%s]" % self.test_case)
+        return content
+
+##==============================================================
+## Endp
+##==============================================================

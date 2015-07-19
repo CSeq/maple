@@ -24,7 +24,7 @@ _sio = [None, os.devnull, 'stderr']
 class Test(testing.CmdlineTest):
     def __init__(self, input_idx):
         testing.CmdlineTest.__init__(self, input_idx)
-        self.add_input(([self.bin(), '-p2', '-b1', '-f', '-k', '-c', '%s/%s' % (self.input_dir(), 'testfile')], _sio))
+        self.add_input(([self.bin(), '-p2', '-b1', '-f', '-k', '-c', 'test.tar')], _sio))
     def bin(self):
         return config.benchmark_home('pbzip2_bug_unknown') + '/pbzip2'
     def input_dir(self):

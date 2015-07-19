@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Authors - Jie Yu (jieyu@umich.edu)
+
+Modified by DKeeper at 2013.11.21
 """
 
 import os
@@ -45,11 +47,11 @@ mc.decr("key")
 
 def __client_0():
     mc = memcache.Client(['127.0.0.1:12345'], debug=0)
-    mc.incr('test', 10)
+    mc.incr('test', 100)
 
 def __client_1():
     mc = memcache.Client(['127.0.0.1:12345'], debug=0)
-    mc.incr('test', 10)
+    mc.incr('test', 5)
 
 class Client(threading.Thread):
     def __init__(self, client_idx):
@@ -96,14 +98,17 @@ class Test(testing.ServerTest):
             clients.append(Client(client_indexes[i]))
         logging.msg('issuing requests for memcached_bug_127\n')
         self.mc = memcache.Client(['127.0.0.1:12345'], debug=0)
-        self.mc.set('test', '0')
+        self.mc.set('test', '10')
         for i in range(len(clients)):
+            logging.msg('client %d start()\n' % i)
             clients[i].start()
         for i in range(len(clients)):
+            logging.msg('client %d join()\n' % i)
             clients[i].join()
     def check_online(self):
         value = self.mc.get('test')
-        if value != None and int(value) != 20:
+        if value != None and int(value) != 115:
+            logging.msg('value = %d\n' % int(value))
             return (False, False, True)
         return (False, False, False)
     def bin(self):

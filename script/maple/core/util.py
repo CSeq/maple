@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Authors - Jie Yu (jieyu@umich.edu)
+
+Modified by DKeeper at 2013.12.26
 """
 
 import os
@@ -29,9 +31,9 @@ def truncate(s, width):
 
 def kill_process(pid):
     try:
-        os.kill(proc.pid, signal.SIGKILL)
+        os.kill(pid, signal.SIGKILL)
     except OSError:
-        logging.msg('kill process %d error\n' % proc.pid)
+        logging.msg('kill process %d error\n' % pid)
 
 def cxx_compile(source, target, flags, echo=False):
     cmd = []
