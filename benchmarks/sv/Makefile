@@ -1,10 +1,16 @@
 
 CXXFLAGS := -Werror -g -fno-omit-frame-pointer -pthread
 
-targets = $(basename $(wildcard *.cc))
+CPPSOURCES = $(wildcard *.cpp) 
+CCSOURCES = $(wildcard *.cc) 
+OBJECTS = $(CPPSOURCES:.cpp=.o) $(CCSOURCES:.cc=.o)
+TARGETS = $(basename $(CCSOURCES))
 
-all: $(targets)
+all: $(TARGETS)
+
+$(TARGETS): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS)
 
 clean:
-	rm -rf $(targets)
+	rm -rf $(TARGET) $(OBJECTS)
 
