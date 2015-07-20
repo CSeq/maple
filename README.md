@@ -16,4 +16,9 @@ Please follow the [Maple User Guide](https://github.com/jieyu/maple) to build th
 #### IDAT-II: Input-Driven Active Testing with Test Selection Strategy II
         $ <maple_home>/script/idiom my_test_genp_10 --- <absolute_path_to_the_executable_under_test>
 #### SPLASH-2 by IDAT-II
+The SPLASH-2 programs experimented are from the [PARSEC 3.0 Benchmark Suite](http://parsec.cs.princeton.edu/parsec3-doc.htm#splash2). They are located at ```<parsec_home>/ext/splash2/kernels/```. 
+For ```radix```,
+
         $ <maple_home>/script/idiom my_test_pro_10 --- <absolute_path_to_the_SPLASH2_executable_under_test>
+
+This also works for other SPLASH-2 programs, e.g., ```fft``` and ```lu_cb```, but ```gen_testcase_splash()``` in ```<maple_home>/script/maple/idiom/main.py``` may need to be revised accordingly to generate valid command options for these programs.
