@@ -11,7 +11,7 @@ Please follow the [Maple User Guide](https://github.com/jieyu/maple) to build th
 ### Three Approaches for Testing Multi-threaded Programs based on Maple:
 #### Maple: Running Maple with multiple random test inputs:
         $ <maple_home>/script/idiom my_rand_gen_10 --- <absolute_path_to_the_executable_under_test>
-#### IDAT-I: Input-Driven Active Testing with Test Selectio n Strategy I
+#### IDAT-I: Input-Driven Active Testing with Test Selection Strategy I
         $ <maple_home>/script/idiom my_test_gen_10 --- <absolute_path_to_the_executable_under_test>
 #### IDAT-II: Input-Driven Active Testing with Test Selection Strategy II
         $ <maple_home>/script/idiom my_test_genp_10 --- <absolute_path_to_the_executable_under_test>
