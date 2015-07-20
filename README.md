@@ -6,6 +6,8 @@ Please follow the [Maple User Guide](https://github.com/jieyu/maple) to build th
     |_is_update_memo            | enable the memoization option in Maple
     |_is_fatal                  | detect only the first concurrency bug
     |_num_of_candidate_testcase | initial number of candidate test inputs
+    |_rand_upper                | upper bound of a random integer
+    |_rand_lower                | lower bound of a random integer
 ### Three Approaches for Testing Multi-threaded Programs based on Maple:
 #### Maple: Running Maple with multiple random test inputs:
         $ <maple_home>/script/idiom my_rand_gen_10 --- <absolute_path_to_the_executable_under_test>
