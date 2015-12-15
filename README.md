@@ -22,3 +22,6 @@ For ```radix```,
         $ <maple_home>/script/idiom my_test_pro_10 --- <absolute_path_to_the_SPLASH2_executable_under_test>
 
 This also works for other SPLASH-2 programs, e.g., ```fft``` and ```lu_cb```, but ```gen_testcase_splash()``` in ```<maple_home>/script/maple/idiom/main.py``` may need to be revised accordingly to generate valid command options for these programs.
+
+### Publication
+Han Yue, Peng Wu, Tsong-Yueh Chen and Yi Lv. Input-driven Active Testing of Multi-threaded Programs. APSEC 2015, pp. 246-253
